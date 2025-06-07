@@ -1,0 +1,125 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  div
+    h1.fw-bold Edit User
+    p.text-muted.mb-0 Update user information
+  = link_to admin_user_path(@user), class: "btn btn-outline-secondary"
+    i.bi.bi-arrow-left.me-2
+    | Back to User
+
+.row
+  .col-md-8
+    .card
+      .card-header
+        h5.mb-0
+          i.bi.bi-pencil.me-2
+          | Edit User Details
+      .card-body
+        = form_with model: [:admin, @user], local: true, class: "row g-3" do |form|
+          .col-md-6
+            = form.label :first_name, class: "form-label"
+            = form.text_field :first_name, class: "form-control", placeholder: "Enter first name"
+          
+          .col-md-6
+            = form.label :last_name, class: "form-label"
+            = form.text_field :last_name, class: "form-control", placeholder: "Enter last name"
+          
+          .col-12
+            = form.label :email, class: "form-label"
+            = form.email_field :email, class: "form-control", placeholder: "Enter email address"
+          
+          .col-md-6
+            = form.label :role, class: "form-label"
+            = form.select :role, \
+                options_for_select([ \
+                  ['User', 'user'], \
+                  ['Admin', 'admin'], \
+                  ['Super Admin', 'super_admin'] \
+                ], @user.role), \
+                {}, \
+                { class: "form-select" }
+          
+          .col-md-6
+            = form.label :theme, class: "form-label"
+            = form.select :theme, \
+                options_for_select([ \
+                  ['Light Theme', 'light'], \
+                  ['Dark Theme', 'dark'], \
+                  ['Auto', 'auto'] \
+                ], @user.theme), \
+                {}, \
+                { class: "form-select" }
+          
+          .col-12
+            hr.my-4
+            h6.text-muted Change Password (leave blank to keep current)
+          
+          .col-md-6
+            = form.label :password, class: "form-label"
+            = form.password_field :password, class: "form-control", placeholder: "New password"
+            .form-text Leave blank to keep current password
+          
+          .col-md-6
+            = form.label :password_confirmation, class: "form-label"
+            = form.password_field :password_confirmation, class: "form-control", placeholder: "Confirm password"
+          
+          .col-12
+            .d-flex.gap-2
+              = form.submit "Update User", class: "btn btn-primary"
+              = link_to "Cancel", admin_user_path(@user), class: "btn btn-outline-secondary"
+
+  .col-md-4
+    .card.mb-4
+      .card-header
+        h5.mb-0
+          i.bi.bi-info-circle.me-2
+          | Current User Info
+      .card-body
+        .text-center.mb-3
+          .bg-primary.rounded-circle.d-flex.align-items-center.justify-content-center.mx-auto style="width: 60px; height: 60px;"
+            i.bi.bi-person.text-white.fs-4
+        
+        h6.text-center = @user.display_name
+        p.text-muted.text-center.small = @user.email
+        
+        .d-flex.justify-content-between.mb-2
+          span Role:
+          - case @user.role
+          - when 'super_admin'
+            .badge.bg-danger Super Admin
+          - when 'admin'
+            .badge.bg-warning Admin
+          - else
+            .badge.bg-secondary User
+        
+        .d-flex.justify-content-between.mb-2
+          span Theme:
+          - if @user.dark?
+            .badge.bg-dark
+              i.bi.bi-moon.me-1
+              | Dark
+          - else
+            .badge.bg-light.text-dark
+              i.bi.bi-sun.me-1
+              | Light
+        
+        .d-flex.justify-content-between
+          span Registered:
+          .small = @user.created_at.strftime("%b %Y")
+
+    .card
+      .card-header
+        h5.mb-0
+          i.bi.bi-shield-exclamation.me-2
+          | Important Notes
+      .card-body
+        ul.list-unstyled.mb-0
+          li.small.text-muted.mb-2
+            i.bi.bi-info-circle.me-1
+            | Leave password fields blank to keep current password
+          li.small.text-muted.mb-2
+            i.bi.bi-exclamation-triangle.me-1
+            | Role changes affect user permissions immediately
+          - if @user == current_user
+            li.small.text-warning
+              i.bi.bi-warning.me-1
+              | You are editing your own account

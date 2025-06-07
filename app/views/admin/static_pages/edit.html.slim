@@ -1,0 +1,89 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  div
+    h1.fw-bold Edit Page
+    p.text-muted.mb-0 Update page content and settings
+  = link_to admin_static_page_path(@static_page), class: "btn btn-outline-secondary"
+    i.bi.bi-arrow-left.me-2
+    | Back to Page
+
+.row
+  .col-md-8
+    .card
+      .card-header
+        h5.mb-0
+          i.bi.bi-pencil.me-2
+          | Edit Page Content
+      .card-body
+        = form_with model: [:admin, @static_page], local: true do |form|
+          .mb-3
+            = form.label :title, class: "form-label"
+            = form.text_field :title, class: "form-control", placeholder: "Enter page title"
+          
+          .mb-3
+            = form.label :slug, class: "form-label"
+            .input-group
+              span.input-group-text /pages/
+              = form.text_field :slug, class: "form-control", placeholder: "page-url-slug"
+            .form-text Slug will be auto-generated from title if left blank
+          
+          .mb-3
+            .form-check.form-switch
+              = form.check_box :published, class: "form-check-input"
+              = form.label :published, "Published", class: "form-check-label"
+              .form-text Make this page visible to public
+          
+          .mb-4
+            = form.label :content, class: "form-label"
+            = form.rich_text_area :content, class: "form-control", style: "min-height: 300px;"
+          
+          .d-flex.gap-2
+            = form.submit "Update Page", class: "btn btn-primary"
+            = link_to "Cancel", admin_static_page_path(@static_page), class: "btn btn-outline-secondary"
+            = link_to static_page_path(@static_page.slug), target: "_blank", class: "btn btn-outline-info"
+              i.bi.bi-box-arrow-up-right.me-2
+              | Preview
+
+  .col-md-4
+    .card.mb-4
+      .card-header
+        h5.mb-0
+          i.bi.bi-info-circle.me-2
+          | Current Page Info
+      .card-body
+        .mb-3
+          strong = @static_page.title
+          - if @static_page.published?
+            .badge.bg-success.ms-2 Published
+          - else
+            .badge.bg-warning.ms-2 Draft
+        
+        .mb-2
+          strong Slug: 
+          code.small = @static_page.slug
+        
+        .mb-2
+          strong Created: 
+          .small = @static_page.created_at.strftime("%b %d, %Y")
+        
+        .small.text-muted
+          Last updated #{time_ago_in_words(@static_page.updated_at)} ago
+
+    .card
+      .card-header
+        h5.mb-0
+          i.bi.bi-lightbulb.me-2
+          | Editor Tips
+      .card-body
+        ul.list-unstyled.mb-0
+          li.small.text-muted.mb-2
+            i.bi.bi-info-circle.me-1
+            | Use the rich text editor for formatting
+          li.small.text-muted.mb-2
+            i.bi.bi-link.me-1
+            | Slug determines the page URL
+          li.small.text-muted.mb-2
+            i.bi.bi-eye.me-1
+            | Unpublished pages are only visible to admins
+          li.small.text-muted
+            i.bi.bi-save.me-1
+            | Remember to save your changes 

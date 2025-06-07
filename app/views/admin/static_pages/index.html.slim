@@ -1,0 +1,65 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  h1.fw-bold Pages Management
+  = link_to new_admin_static_page_path, class: "btn btn-primary"
+    i.bi.bi-file-plus.me-2
+    | Create New Page
+
+.card
+  .card-header
+    .d-flex.justify-content-between.align-items-center
+      h5.mb-0
+        i.bi.bi-file-text.me-2
+        | All Pages (#{@static_pages.count})
+      .small.text-muted
+        | Total: #{StaticPage.count} pages
+
+  .card-body.p-0
+    .table-responsive
+      table.table.table-hover.mb-0
+        thead.table-light
+          tr
+            th Status
+            th Title
+            th Slug
+            th Last Updated
+            th.text-center Actions
+        tbody
+          - @static_pages.each do |page|
+            tr
+              td
+                - if page.published?
+                  .badge.bg-success
+                    i.bi.bi-check-circle.me-1
+                    | Published
+                - else
+                  .badge.bg-warning
+                    i.bi.bi-clock.me-1
+                    | Draft
+              td
+                .fw-semibold = page.title
+                - if page.content.present?
+                  .small.text-muted = truncate(strip_tags(page.content.to_s), length: 80)
+              td
+                code.bg-light.px-2.py-1.rounded = page.slug
+                = link_to static_page_path(page.slug), target: "_blank", class: "btn btn-sm btn-outline-info ms-2", title: "View public page"
+                  i.bi.bi-box-arrow-up-right
+              td.text-muted
+                = page.updated_at.strftime("%b %d, %Y")
+                .small = time_ago_in_words(page.updated_at) + " ago"
+              td.text-center
+                .btn-group role="group"
+                  = link_to admin_static_page_path(page), class: "btn btn-sm btn-outline-primary", title: "View"
+                    i.bi.bi-eye
+                  = link_to edit_admin_static_page_path(page), class: "btn btn-sm btn-outline-warning", title: "Edit"
+                    i.bi.bi-pencil
+                  - delete_data = { action: "click->confirm#show", confirm_url: admin_static_page_path(page), confirm_title: "Delete Page", confirm_message: "Are you sure you want to delete '#{page.title}'? This action cannot be undone.", confirm_method: "delete", confirm_type: "danger" }
+                  button.btn.btn-sm.btn-outline-danger type="button" title="Delete" data=delete_data
+                    i.bi.bi-trash
+
+- if @static_pages.empty?
+  .card
+    .card-body.text-center.py-5
+      i.bi.bi-file-text.fs-1.text-muted.mb-3
+      h5.text-muted No pages found
+      p.text-muted Start by creating your first static page.
+      = link_to "Create First Page", new_admin_static_page_path, class: "btn btn-primary" 

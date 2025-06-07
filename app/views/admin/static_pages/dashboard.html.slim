@@ -1,0 +1,61 @@
+
+.row.mb-4
+  .col-12
+    h1.fw-bold Welcome to PROFLOW Admin Panel
+    p.text-muted Manage your application with ease
+
+.row.g-4.mb-4
+  .col-md-3
+    .card.dashboard-card.text-center.h-100
+      .card-body
+        i.bi.bi-people.fs-1.text-primary.mb-2
+        h5.card-title Users
+        p.card-text.fs-4.fw-bold = @users_count || 0
+        = link_to "Manage Users", admin_users_path, class: "btn btn-outline-primary"
+
+  .col-md-3
+    .card.dashboard-card.text-center.h-100
+      .card-body
+        i.bi.bi-file-text.fs-1.text-success.mb-2
+        h5.card-title Static Pages
+        p.card-text.fs-4.fw-bold = @static_pages_count || 0
+        = link_to "Manage Pages", admin_static_pages_path, class: "btn btn-outline-success"
+
+  .col-md-3
+    .card.dashboard-card.text-center.h-100
+      .card-body
+        i.bi.bi-gear.fs-1.text-warning.mb-2
+        h5.card-title Settings
+        p.card-text.fs-4.fw-bold System
+        = link_to "Configure", "#", class: "btn btn-outline-warning"
+
+  .col-md-3
+    .card.dashboard-card.text-center.h-100
+      .card-body
+        i.bi.bi-graph-up.fs-1.text-info.mb-2
+        h5.card-title Analytics
+        p.card-text.fs-4.fw-bold Coming Soon
+        = link_to "View Stats", "#", class: "btn btn-outline-info"
+
+.row
+  .col-md-8
+    .card
+      .card-header
+        h5.mb-0 Recent Activity
+      .card-body
+        p.text-muted No recent activity to display.
+
+  .col-md-4
+    .card
+      .card-header
+        h5.mb-0 Quick Actions
+      .card-body
+        = link_to admin_users_path, class: "btn btn-primary w-100 mb-2"
+          i.bi.bi-person-plus.me-2
+          | Add New User
+        = link_to admin_static_pages_path, class: "btn btn-success w-100 mb-2"
+          i.bi.bi-file-plus.me-2
+          | Create Page
+        = link_to "#", class: "btn btn-info w-100"
+          i.bi.bi-gear.me-2
+          | System Settings

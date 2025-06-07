@@ -1,0 +1,76 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  h1.fw-bold Users Management
+  = link_to new_admin_user_path, class: "btn btn-primary"
+    i.bi.bi-person-plus.me-2
+    | Add New User
+
+.card
+  .card-header
+    .d-flex.justify-content-between.align-items-center
+      h5.mb-0
+        i.bi.bi-people.me-2
+        | All Users (#{@users.count})
+      .small.text-muted
+        | Total: #{User.count} users
+  
+  .card-body.p-0
+    .table-responsive
+      table.table.table-hover.mb-0
+        thead.table-light
+          tr
+            th Avatar
+            th Name
+            th Email
+            th Role
+            th Theme
+            th Registered
+            th.text-center Actions
+        tbody
+          - @users.each do |user|
+            tr
+              td
+                .d-flex.align-items-center
+                  .bg-primary.rounded-circle.d-flex.align-items-center.justify-content-center style="width: 40px; height: 40px;"
+                    i.bi.bi-person.text-white
+              td
+                .fw-semibold = user.display_name
+                - if user.full_name.present?
+                  .small.text-muted = user.email
+              td
+                = user.email
+                - if user == current_user
+                  .badge.bg-info.ms-2 You
+              td
+                - case user.role
+                - when 'super_admin'
+                  .badge.bg-danger Super Admin
+                - when 'admin' 
+                  .badge.bg-warning Admin
+                - else
+                  .badge.bg-secondary User
+              td
+                - if user.dark?
+                  i.bi.bi-moon.text-warning title="Dark theme"
+                - else
+                  i.bi.bi-sun.text-primary title="Light theme"
+              td.text-muted
+                = user.created_at.strftime("%b %d, %Y")
+                .small = time_ago_in_words(user.created_at) + " ago"
+              td.text-center
+                .btn-group role="group"
+                  = link_to admin_user_path(user), class: "btn btn-sm btn-outline-primary", title: "View"
+                    i.bi.bi-eye
+                  = link_to edit_admin_user_path(user), class: "btn btn-sm btn-outline-warning", title: "Edit"
+                    i.bi.bi-pencil
+                  - unless user == current_user
+                    - delete_data = { action: "click->confirm#show", confirm_url: admin_user_path(user), confirm_title: "Delete User", confirm_message: "Are you sure you want to delete #{user.display_name}? This action cannot be undone.", confirm_method: "delete", confirm_type: "danger" }
+                    button.btn.btn-sm.btn-outline-danger type="button" title="Delete" data=delete_data
+                      i.bi.bi-trash
+
+- if @users.empty?
+  .card
+    .card-body.text-center.py-5
+      i.bi.bi-people.fs-1.text-muted.mb-3
+      h5.text-muted No users found
+      p.text-muted Start by creating your first user account.
+      = link_to "Add First User", new_admin_user_path, class: "btn btn-primary"

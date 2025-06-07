@@ -1,0 +1,47 @@
+doctype html
+html
+  head
+    title 
+      = content_for(:title) || "PROFLOW Admin Panel"
+    meta name="viewport" content="width=device-width,initial-scale=1"
+    meta name="apple-mobile-web-app-capable" content="yes"
+    meta name="mobile-web-app-capable" content="yes"
+    = csrf_meta_tags
+    = csp_meta_tag
+    
+    = yield :head
+    
+    link rel="icon" href="/icon.png" type="image/png"
+    link rel="icon" href="/icon.svg" type="image/svg+xml"
+    link rel="apple-touch-icon" href="/icon.png"
+    
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = javascript_importmap_tags
+    
+  body data-bs-theme=(current_user&.dark? ? "dark" : "light") data-controller="confirm"
+    - if user_signed_in? && !devise_controller?
+      = render 'shared/navbar'
+    
+    main class=(devise_controller? ? "container mt-5" : "container-fluid py-4")
+      = render 'shared/flash_messages'
+      = yield
+    
+    // Uniwersalny modal dla confirmów
+    #confirmModal.modal.fade tabindex="-1" data-confirm-target="modal"
+      .modal-dialog.modal-dialog-centered
+        .modal-content.border-0.shadow-lg
+          .modal-header.border-0.pb-0
+            h5.modal-title.fw-bold data-confirm-target="title"
+              i.bi.bi-exclamation-triangle.text-warning.me-2
+              | Confirm Action
+            button.btn-close type="button" data-bs-dismiss="modal"
+          .modal-body.pt-0
+            p.text-muted.mb-0 data-confirm-target="message"
+              | Are you sure you want to proceed?
+          .modal-footer.border-0.pt-2
+            button.btn.btn-outline-secondary type="button" data-bs-dismiss="modal"
+              i.bi.bi-x-circle.me-2
+              | Cancel
+            button.btn.btn-danger type="button" data-confirm-target="confirmBtn" data-action="click->confirm#execute"
+              i.bi.bi-check-circle.me-2
+              | Confirm

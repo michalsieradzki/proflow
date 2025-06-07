@@ -1,0 +1,121 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  div
+    h1.fw-bold = @static_page.title
+    p.text-muted.mb-0 Static Page Details
+  .d-flex.gap-2
+    = link_to static_page_path(@static_page.slug), target: "_blank", class: "btn btn-info"
+      i.bi.bi-box-arrow-up-right.me-2
+      | View Live
+    = link_to edit_admin_static_page_path(@static_page), class: "btn btn-warning"
+      i.bi.bi-pencil.me-2
+      | Edit Page
+    = link_to admin_static_pages_path, class: "btn btn-outline-secondary"
+      i.bi.bi-arrow-left.me-2
+      | Back to Pages
+
+.row
+  .col-md-8
+    .card.mb-4
+      .card-header
+        .d-flex.justify-content-between.align-items-center
+          h5.mb-0
+            i.bi.bi-file-text.me-2
+            | Page Content
+          - if @static_page.published?
+            .badge.bg-success
+              i.bi.bi-check-circle.me-1
+              | Published
+          - else
+            .badge.bg-warning
+              i.bi.bi-clock.me-1
+              | Draft
+      .card-body
+        - if @static_page.content.present?
+          .content-preview
+            = @static_page.content
+        - else
+          .text-muted.text-center.py-4
+            i.bi.bi-file-text.fs-1.mb-3
+            p No content available for this page.
+
+  .col-md-4
+    .card.mb-4
+      .card-header
+        h5.mb-0
+          i.bi.bi-info-circle.me-2
+          | Page Information
+      .card-body
+        .row.mb-3
+          .col-sm-4
+            strong Title:
+          .col-sm-8
+            = @static_page.title
+        
+        .row.mb-3
+          .col-sm-4
+            strong Slug:
+          .col-sm-8
+            code.bg-light.px-2.py-1.rounded = @static_page.slug
+        
+        .row.mb-3
+          .col-sm-4
+            strong Status:
+          .col-sm-8
+            - if @static_page.published?
+              .badge.bg-success Published
+            - else
+              .badge.bg-warning Draft
+        
+        .row.mb-3
+          .col-sm-4
+            strong Created:
+          .col-sm-8
+            = @static_page.created_at.strftime("%B %d, %Y")
+            .small.text-muted = time_ago_in_words(@static_page.created_at) + " ago"
+        
+        .row
+          .col-sm-4
+            strong Updated:
+          .col-sm-8
+            = @static_page.updated_at.strftime("%B %d, %Y")
+            .small.text-muted = time_ago_in_words(@static_page.updated_at) + " ago"
+
+    .card.mb-4
+      .card-header
+        h5.mb-0
+          i.bi.bi-gear.me-2
+          | Quick Actions
+      .card-body
+        = link_to static_page_path(@static_page.slug), target: "_blank", class: "btn btn-info w-100 mb-2"
+          i.bi.bi-box-arrow-up-right.me-2
+          | View Live Page
+        
+        = link_to edit_admin_static_page_path(@static_page), class: "btn btn-warning w-100 mb-2"
+          i.bi.bi-pencil.me-2
+          | Edit Page
+        
+        = link_to admin_static_page_path(@static_page), method: :delete, \
+            class: "btn btn-danger w-100 mb-2", \
+            data: { \
+              confirm: "Are you sure you want to delete #{@static_page.title}?", \
+              turbo_method: :delete \
+            }
+          i.bi.bi-trash.me-2
+          | Delete Page
+        
+        = link_to admin_static_pages_path, class: "btn btn-outline-secondary w-100"
+          i.bi.bi-list.me-2
+          | View All Pages
+
+    .card
+      .card-header
+        h5.mb-0
+          i.bi.bi-link.me-2
+          | Public Access
+      .card-body
+        .mb-2
+          strong URL:
+        code.small.d-block.p-2.bg-light.rounded = static_page_url(@static_page.slug)
+        .mt-2
+          = link_to "Open in new tab", static_page_path(@static_page.slug), target: "_blank", class: "btn btn-sm btn-outline-info"
+            i.bi.bi-box-arrow-up-right.me-1 

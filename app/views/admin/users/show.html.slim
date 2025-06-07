@@ -1,0 +1,125 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  div
+    h1.fw-bold = @user.display_name
+    p.text-muted.mb-0 User Details
+  .d-flex.gap-2
+    = link_to edit_admin_user_path(@user), class: "btn btn-warning"
+      i.bi.bi-pencil.me-2
+      | Edit User
+    = link_to admin_users_path, class: "btn btn-outline-secondary"
+      i.bi.bi-arrow-left.me-2
+      | Back to Users
+
+.row
+  .col-md-8
+    .card.mb-4
+      .card-header
+        h5.mb-0
+          i.bi.bi-person-circle.me-2
+          | User Information
+      .card-body
+        .row.mb-3
+          .col-sm-3
+            strong Avatar:
+          .col-sm-9
+            .bg-primary.rounded-circle.d-flex.align-items-center.justify-content-center style="width: 60px; height: 60px;"
+              i.bi.bi-person.text-white.fs-4
+        
+        .row.mb-3
+          .col-sm-3
+            strong Full Name:
+          .col-sm-9
+            = @user.full_name.present? ? @user.full_name : "Not provided"
+        
+        .row.mb-3
+          .col-sm-3
+            strong Email:
+          .col-sm-9
+            = @user.email
+            - if @user == current_user
+              .badge.bg-info.ms-2 Your Account
+        
+        .row.mb-3
+          .col-sm-3
+            strong Role:
+          .col-sm-9
+            - case @user.role
+            - when 'super_admin'
+              .badge.bg-danger.fs-6 Super Admin
+            - when 'admin'
+              .badge.bg-warning.fs-6 Admin
+            - else
+              .badge.bg-secondary.fs-6 User
+        
+        .row.mb-3
+          .col-sm-3
+            strong Theme Preference:
+          .col-sm-9
+            - if @user.dark?
+              .badge.bg-dark.fs-6
+                i.bi.bi-moon.me-1
+                | Dark Theme
+            - else
+              .badge.bg-light.text-dark.fs-6
+                i.bi.bi-sun.me-1
+                | Light Theme
+        
+        .row.mb-3
+          .col-sm-3
+            strong Registered:
+          .col-sm-9
+            = @user.created_at.strftime("%B %d, %Y at %I:%M %p")
+            .small.text-muted = time_ago_in_words(@user.created_at) + " ago"
+        
+        .row
+          .col-sm-3
+            strong Last Updated:
+          .col-sm-9
+            = @user.updated_at.strftime("%B %d, %Y at %I:%M %p")
+            .small.text-muted = time_ago_in_words(@user.updated_at) + " ago"
+
+  .col-md-4
+    .card.mb-4
+      .card-header
+        h5.mb-0
+          i.bi.bi-gear.me-2
+          | Quick Actions
+      .card-body
+        = link_to edit_admin_user_path(@user), class: "btn btn-warning w-100 mb-2"
+          i.bi.bi-pencil.me-2
+          | Edit User Details
+        
+        - unless @user == current_user
+          = link_to admin_user_path(@user), \
+              class: "btn btn-danger w-100 mb-2", \
+              data: { \
+                action: "click->confirm#show", \
+                confirm_title: "Delete User", \
+                confirm_message: "Are you sure you want to permanently delete #{@user.display_name}? This action cannot be undone and will remove all user data.", \
+                confirm_method: "delete", \
+                confirm_type: "danger" \
+              }
+            i.bi.bi-trash.me-2
+            | Delete User
+        
+        = link_to admin_users_path, class: "btn btn-outline-secondary w-100"
+          i.bi.bi-list.me-2
+          | View All Users
+
+    .card
+      .card-header
+        h5.mb-0
+          i.bi.bi-info-circle.me-2
+          | Account Status
+      .card-body
+        .d-flex.justify-content-between.align-items-center.mb-2
+          span Account Status:
+          .badge.bg-success Active
+        
+        .d-flex.justify-content-between.align-items-center.mb-2
+          span Login Access:
+          .badge.bg-success Enabled
+        
+        .d-flex.justify-content-between.align-items-center
+          span Total Users:
+          .badge.bg-info = User.count
